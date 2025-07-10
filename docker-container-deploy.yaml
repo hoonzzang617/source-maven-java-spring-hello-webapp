@@ -5,7 +5,7 @@
   - name: Create & Start Container
     docker_container:
       name: myweb
-      image: "hoonzzamg/myweb-cicd:latest"
+      image: "hoonzzang/myweb-cicd:latest"
       state: started
       ports:
       - "80:8080"
