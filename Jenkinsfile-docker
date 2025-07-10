@@ -29,7 +29,7 @@ pipeline {
     stage('Build Docker Image') {
       agent { label 'controller' }
       steps {
-        sh 'docker image build -t hoonzzang/myweb-cicd:$BUILD_NUMBER' 	// 각자 본인 깃헙 계정 주소로 
+        sh 'docker image build -t hoonzzang/myweb-cicd:$BUILD_NUMBER .' 	// 각자 본인 깃헙 계정 주소로 
       }
     }
     stage('Tag Docker Image') {
