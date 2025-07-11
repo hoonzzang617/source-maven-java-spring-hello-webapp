@@ -60,5 +60,30 @@ pipeline {
         }
       }
     }
+    stage('Update K8s Manifests & Push') {
+      environment {
+        githubUser = 'hoonzzang617' //Ryan Jang
+        githubEmail = 'kt3585@gmail.com' //myaccount@example.com
+        githubId = 'hoonzzang617' //myaccount 
+        githubRepo = 'cicd-yaml' //jenkins-kube-deploy
+        githubURL = "https://github.com/${githubId}/${githubRepo}.git"
+        dockerhubId = 'hoonzzang' //myaccount
+        dockerhubRepo = 'myweb-cicd' //hello-world
+      }
+      steps {
+        container('git') {
+          git branch: 'main', credentialsId: 'github-credential', url: "${githubURL}"
+          sh "git config --global --add safe.directory ${workspace}"
+          sh "git config --global user.name ${githubUser}"
+          sh "git config --global user.email ${githubEmail}"
+          sh 'sed -i "s/image:.*/image: ${dockerhubId}\\/${dockerhubRepo}:${BUILD_NUMBER}/g" deployment.yaml'
+          sh 'git add deployment.yaml'
+          sh 'git commit -m "Jenkins Build Number - ${BUILD_NUMBER}"'
+          withCredentials([gitUsernamePassword(credentialsId: 'github-credential', gitToolName: 'Default')]) {
+            sh 'git push --set-upstream origin main'
+          }
+        }
+      }
+    }
   }
 }
